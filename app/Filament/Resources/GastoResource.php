@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\IngresoResource\Pages;
-use App\Filament\Resources\IngresoResource\RelationManagers;
-use App\Models\Ingreso;
+use App\Filament\Resources\GastoResource\Pages;
+use App\Filament\Resources\GastoResource\RelationManagers;
+use App\Models\Gasto;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,17 +14,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Filament\Support\Facades\FilamentAsset;
 
-class IngresoResource extends Resource
+
+class GastoResource extends Resource
 {
-   protected static ?string $model = Ingreso::class;
+   protected static ?string $model = Gasto::class;
 
-   protected static ?string $navigationIcon = 'heroicon-o-arrow-up-circle';
-   protected static ?string $modelLabel = 'Ingreso';
-   protected static ?string $pluralModelLabel = 'Ingresos';
-   protected static ?int $navigationSort = 1;
+   protected static ?string $navigationIcon = 'heroicon-o-arrow-down-circle';
+   protected static ?string $modelLabel = 'Gasto';
+   protected static ?string $pluralModelLabel = 'Gastos';
+   protected static ?int $navigationSort = 2;
 
    public static function form(Form $form): Form
    {
@@ -34,7 +33,7 @@ class IngresoResource extends Resource
                    ->schema([
                        Forms\Components\TextInput::make('numero_comprobante')
                            ->label('N° Comprobante')
-                           ->default(fn () => Ingreso::generarNumeroComprobante())
+                           ->default(fn () => Gasto::generarNumeroComprobante())
                            ->disabled()
                            ->dehydrated(),
 
@@ -43,9 +42,9 @@ class IngresoResource extends Resource
                            ->default(now())
                            ->required(),
 
-                       Forms\Components\Select::make('cuenta_ingreso_id')
-                           ->label('Cuenta de Ingreso')
-                           ->relationship('cuentaIngreso', 'nombre')
+                       Forms\Components\Select::make('cuenta_egreso_id')
+                           ->label('Cuenta de Gasto')
+                           ->relationship('cuentaEgreso', 'nombre')
                            ->searchable()
                            ->preload()
                            ->required(),
@@ -59,35 +58,35 @@ class IngresoResource extends Resource
 
                        Forms\Components\Select::make('forma_pago')
                            ->label('Forma de Pago')
-                           ->options(Ingreso::FORMAS_PAGO)
+                           ->options(Gasto::FORMAS_PAGO)
                            ->required(),
 
                         Forms\Components\Select::make('user_id')
                            ->label('Registrado por')
                            ->relationship('user', 'name')
-                           ->default(Auth::user()?->id)
+                           ->default(Auth::user()?->id) 
                            ->disabled()
                            ->dehydrated()
                            ->required(),
 
-                        Forms\Components\FileUpload::make('comprobante_path')
+                       Forms\Components\FileUpload::make('comprobante_path')
                            ->label('Comprobante')
                            ->image()
                            ->acceptedFileTypes(['image/*', 'application/pdf'])
                            ->maxSize(5120)
-                           ->directory('comprobantes/ingresos')
+                           ->directory('comprobantes/gastos')
                            ->columnSpanFull()
-                           ->required(), 
-                       
+                           ->required(),
+
                        Forms\Components\Textarea::make('descripcion')
                            ->label('Descripción')
                            ->rows(3)
                            ->columnSpanFull()
-                           ->required(), 
+                           ->required(),
 
                        Forms\Components\Select::make('estado')
                            ->label('Estado')
-                           ->options(Ingreso::ESTADOS)
+                           ->options(Gasto::ESTADOS)
                            ->default('activo')
                            ->disabled()
                            ->dehydrated()
@@ -110,7 +109,7 @@ class IngresoResource extends Resource
                    ->date('d/m/Y')
                    ->sortable(),
 
-               Tables\Columns\TextColumn::make('cuentaIngreso.nombre')
+               Tables\Columns\TextColumn::make('cuentaEgreso.nombre')
                    ->label('Cuenta')
                    ->searchable()
                    ->sortable(),
@@ -142,14 +141,14 @@ class IngresoResource extends Resource
            ])
            ->defaultSort('created_at', 'desc')
            ->filters([
-               Tables\Filters\SelectFilter::make('cuenta_ingreso_id')
-                   ->relationship('cuentaIngreso', 'nombre')
+               Tables\Filters\SelectFilter::make('cuenta_egreso_id')
+                   ->relationship('cuentaEgreso', 'nombre')
                    ->label('Cuenta')
                    ->preload()
                    ->multiple(),
 
                Tables\Filters\SelectFilter::make('estado')
-                   ->options(Ingreso::ESTADOS)
+                   ->options(Gasto::ESTADOS)
                    ->label('Estado'),
 
                Tables\Filters\Filter::make('fecha')
@@ -178,12 +177,11 @@ class IngresoResource extends Resource
                    ->icon('heroicon-o-x-circle')
                    ->visible(fn ($record) => $record->estado === 'activo')
                    ->action(fn ($record) => $record->update(['estado' => 'anulado'])),
-                Action::make('ver_comprobante')
+               Action::make('ver_comprobante')
                    ->label('Ver Comprobante')
                    ->icon('heroicon-o-eye')
-                   ->url(fn ($record) => "/storage/{$record->comprobante_path}")
-                   ->openUrlInNewTab()
-                   ->visible(fn ($record) => $record->comprobante_path !== null),
+                   ->url(fn ($record) => asset("storage/{$record->comprobante_path}"))
+                   ->openUrlInNewTab(),
            ])
            ->bulkActions([
                Tables\Actions\BulkActionGroup::make([
@@ -195,7 +193,7 @@ class IngresoResource extends Resource
    public static function getPages(): array
    {
        return [
-           'index' => Pages\ListIngresos::route('/'),
+           'index' => Pages\ListGastos::route('/'),
        ];
    }
 }

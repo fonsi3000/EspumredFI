@@ -8,14 +8,19 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class IngresosOverview extends BaseWidget
 {
+    protected static ?int $sort = -3;
+    protected static bool $isLazy = false;
+
+    protected int | string | array $columnSpan = 6; // Ocupa la otra mitad del ancho
+
     protected function getStats(): array
     {
         return [
             Stat::make('Total Ingresos', '$ ' . number_format(Ingreso::where('estado', 'activo')->sum('monto'), 2, ',', '.'))
-                ->description('Total de registros: ' . Ingreso::where('estado', 'activo')->count())
+                ->description(Ingreso::where('estado', 'activo')->count() . ' registros activos')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
+                ->chart([7, 3, 4, 5, 6, 3, 5, 3])
+                ->color('success'),
         ];
     }
 }

@@ -18,6 +18,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Resources\GastoResource\Widgets\GastosOverview;
+use App\Filament\Resources\IngresoResource\Widgets\CombinedOverview;
 
 class InicioPanelProvider extends PanelProvider
 {
@@ -40,8 +42,11 @@ class InicioPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
-                IngresosOverview::class,
+                // IngresosOverview::class,
+                // GastosOverview::class,
+                CombinedOverview::class,
             ])
+            
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
