@@ -19,7 +19,7 @@ class CuentaEgresoResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-down';
     protected static ?string $modelLabel = 'Cuenta de Egreso';
     protected static ?string $pluralModelLabel = 'Cuentas de Egresos';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
