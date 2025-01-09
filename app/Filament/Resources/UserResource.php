@@ -30,6 +30,12 @@ class UserResource extends Resource
                Forms\Components\TextInput::make('name')
                    ->required()
                    ->maxLength(255),
+               Forms\Components\Select::make('empresa')
+                   ->options([
+                       'Espumas Medellin' => 'Espumas Medellin',
+                       'Espumados del Litoral' => 'Espumados del Litoral',
+                   ])
+                   ->required(),
                Forms\Components\TextInput::make('email')
                    ->email()
                    ->required()
@@ -63,6 +69,8 @@ class UserResource extends Resource
            ->columns([
                Tables\Columns\TextColumn::make('name')
                    ->searchable(),
+               Tables\Columns\TextColumn::make('empresa')
+                   ->searchable(),    
                Tables\Columns\TextColumn::make('email')
                    ->searchable(),
                Tables\Columns\TextColumn::make('roles.name')
