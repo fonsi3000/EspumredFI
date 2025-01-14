@@ -80,6 +80,57 @@ class ActiveLoanResource extends Resource
     {
         return $infolist
             ->schema([
+                //Informacion del deudor dame una alternativa a quiero hacer un sistema de restaurante que registre las ventas 
+                Infolists\Components\Section::make('Informacion del Deudor')
+                    ->schema([
+                        Infolists\Components\Grid::make(3)
+                            ->schema([
+                                // Nombre
+                                Infolists\Components\TextEntry::make('loanRequest.name')
+                                    ->label('Nombre')
+                                    ->size(TextEntry\TextEntrySize::Large),
+
+                                // Numero de documento
+                                Infolists\Components\TextEntry::make('loanRequest.document_number')
+                                    ->label('Numero de documento')
+                                    ->size(TextEntry\TextEntrySize::Large),
+
+                                // Correo electronico
+                                Infolists\Components\TextEntry::make('loanRequest.email')
+                                    ->label('Correo')
+                                    ->size(TextEntry\TextEntrySize::Large),
+
+                                //Numero de celular
+                                Infolists\Components\TextEntry::make('loanRequest.phone')
+                                    ->label('Numero de celular')
+                                    ->size(TextEntry\TextEntrySize::Large),
+
+                                // Area
+                                Infolists\Components\TextEntry::make('loanRequest.area')
+                                    ->label('Area')
+                                    ->size(TextEntry\TextEntrySize::Large),
+
+                                // Cargo
+                                Infolists\Components\TextEntry::make('loanRequest.position')
+                                    ->label('Cargo')
+                                    ->size(TextEntry\TextEntrySize::Large),
+                            ]),
+
+                        // // Información de Pagos quiero que me hagas la misma dinamica pero si las cuotas fueran quincenal
+                        // Infolists\Components\Grid::make(3)
+                        //     ->schema([
+                        //         Infolists\Components\TextEntry::make('payments_made')
+                        //             ->label('Cuotas Pagadas'),
+
+                        //         Infolists\Components\TextEntry::make('payments_remaining')
+                        //             ->label('Cuotas Pendientes'),
+
+                        //         Infolists\Components\TextEntry::make('next_payment_date')
+                        //             ->label('Próximo Pago')
+                        //             ->date('d/m/Y'),
+                        //     ]),
+                    ]),
+
                 // Sección de Resumen 
                 Infolists\Components\Section::make('Resumen del Préstamo')
                     ->schema([
@@ -275,6 +326,10 @@ class ActiveLoanResource extends Resource
                     ->label('Cliente')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('loanRequest.document_number')
+                    ->label('Documento cliente')
+                    ->searchable()
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Monto Total')
@@ -315,38 +370,38 @@ class ActiveLoanResource extends Resource
                 ViewAction::make()
                     ->modalWidth('7xl'),
 
-                Action::make('register_payment')
-                    ->label('Registrar Pago')
-                    ->icon('heroicon-o-banknotes')
-                    ->color('success')
-                    ->form([
-                        Forms\Components\DatePicker::make('payment_date')
-                            ->label('Fecha de Pago')
-                            ->required()
-                            ->default(now()),
+                // Action::make('register_payment')
+                //     ->label('Registrar Pago')
+                //     ->icon('heroicon-o-banknotes')
+                //     ->color('success')
+                //     ->form([
+                //         Forms\Components\DatePicker::make('payment_date')
+                //             ->label('Fecha de Pago')
+                //             ->required()
+                //             ->default(now()),
 
-                        Forms\Components\TextInput::make('amount')
-                            ->label('Monto')
-                            ->required()
-                            ->numeric()
-                            ->prefix('$'),
+                //         Forms\Components\TextInput::make('amount')
+                //             ->label('Monto')
+                //             ->required()
+                //             ->numeric()
+                //             ->prefix('$'),
 
-                        Forms\Components\FileUpload::make('receipt')
-                            ->label('Comprobante')
-                            ->directory('payment-receipts')
-                            ->acceptedFileTypes(['application/pdf']),
+                //         Forms\Components\FileUpload::make('receipt')
+                //             ->label('Comprobante')
+                //             ->directory('payment-receipts')
+                //             ->acceptedFileTypes(['application/pdf']),
 
-                        Forms\Components\Textarea::make('notes')
-                            ->label('Observaciones'),
-                    ])
-                    ->action(function (ActiveLoan $record, array $data) {
-                        $record->applyPayment(
-                            amount: $data['amount'],
-                            paymentDate: $data['payment_date'],
-                            receiptNumber: $data['receipt'] ?? null,
-                            notes: $data['notes'] ?? null
-                        );
-                    }),
+                //         Forms\Components\Textarea::make('notes')
+                //             ->label('Observaciones'),
+                //     ])
+                //     ->action(function (ActiveLoan $record, array $data) {
+                //         $record->applyPayment(
+                //             amount: $data['amount'],
+                //             paymentDate: $data['payment_date'],
+                //             receiptNumber: $data['receipt'] ?? null,
+                //             notes: $data['notes'] ?? null
+                //         );
+                //     }),
             ])
             ->defaultSort('created_at', 'desc');
     }

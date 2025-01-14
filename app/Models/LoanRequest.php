@@ -81,7 +81,7 @@ class LoanRequest extends Model
     public static function generateLoanNumber(): string
     {
         $lastNumber = static::max('id') ?? 0;
-        return 'LOAN-' . str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
+        return  str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
     }
 
     public function markAsDeleted()
