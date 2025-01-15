@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         // Tabla principal de préstamos activos
@@ -25,35 +24,34 @@ return new class extends Migration
             $table->decimal('interest_rate', 5, 2);
             $table->enum('payment_frequency', ['monthly', 'biweekly']);
 
-            // Control de fechas
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->date('next_payment_date');
+            // Control de fechas - Ahora nullable porque dependen del desembolso
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->date('next_payment_date')->nullable();
+            $table->date('disbursement_date')->nullable();
 
             // Montos y totales
-            $table->decimal('monthly_payment', 12, 2);
+            $table->decimal('monthly_payment', 12, 2)->nullable();
             $table->decimal('total_paid', 12, 2)->default(0);
             $table->decimal('total_interest_paid', 12, 2)->default(0);
             $table->decimal('total_principal_paid', 12, 2)->default(0);
 
             // Control de pagos
-            $table->integer('total_payments')->default(0);
+            $table->integer('total_payments');
             $table->integer('payments_made')->default(0);
             $table->integer('payments_remaining');
 
-            // Estado del préstamo
+            // Estado del préstamo - Actualizado con los nuevos estados
             $table->enum('status', [
-                'active',      // Préstamo activo y al día
-                'delayed',     // Con pagos atrasados
-                'completed',   // Pagado completamente
-                'defaulted',   // En mora significativa
-                'cancelled'    // Cancelado por alguna razón
-            ])->default('active');
+                'pending_disbursement',  // Sin desembolsar
+                'active',               // Activo
+                'completed'             // Completado
+            ])->default('pending_disbursement');
 
             // Control
             $table->text('notes')->nullable();
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes(); // Cambiado a softDeletes() para consistencia
         });
 
         // Tabla para el historial de pagos
@@ -67,7 +65,7 @@ return new class extends Migration
             $table->integer('payment_number');
             $table->date('scheduled_date');
             $table->date('payment_date')->nullable();
-            $table->decimal('amount_paid', 12, 2);
+            $table->decimal('amount_paid', 12, 2)->default(0);
             $table->decimal('principal_amount', 12, 2);
             $table->decimal('interest_amount', 12, 2);
             $table->decimal('remaining_balance', 12, 2);
@@ -75,11 +73,13 @@ return new class extends Migration
             // Comprobante y estado
             $table->string('receipt_number')->nullable();
             $table->string('receipt_file')->nullable();
+
+            // Estado del pago - Corregido con los estados correctos
             $table->enum('status', [
-                'pending',
-                'paid',
-                'partial',
-                'late'
+                'pending',    // Pendiente de pago
+                'paid',      // Pagado completamente
+                'partial',   // Pago parcial
+                'late'       // Pago atrasado
             ])->default('pending');
 
             // Control
@@ -88,7 +88,7 @@ return new class extends Migration
                 ->constrained('users')
                 ->onDelete('restrict');
             $table->timestamps();
-            $table->softDeletes(); // Agregamos esta línea para el SoftDeletes
+            $table->softDeletes();
         });
     }
 

@@ -350,10 +350,16 @@ class ActiveLoanResource extends Resource
                     ->label('Estado')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
+                        'pending_disbursement' => 'warning',
                         'active' => 'success',
-                        'delayed' => 'warning',
-                        'defaulted' => 'danger',
+                        'completed' => 'primary',
                         default => 'gray',
+                    })
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'pending_disbursement' => 'Sin Desembolsar',
+                        'active' => 'Activo',
+                        'completed' => 'Completado',
+                        default => 'Desconocido',
                     }),
             ])
             ->filters([
@@ -370,38 +376,34 @@ class ActiveLoanResource extends Resource
                 ViewAction::make()
                     ->modalWidth('7xl'),
 
-                // Action::make('register_payment')
-                //     ->label('Registrar Pago')
-                //     ->icon('heroicon-o-banknotes')
-                //     ->color('success')
-                //     ->form([
-                //         Forms\Components\DatePicker::make('payment_date')
-                //             ->label('Fecha de Pago')
-                //             ->required()
-                //             ->default(now()),
-
-                //         Forms\Components\TextInput::make('amount')
-                //             ->label('Monto')
-                //             ->required()
-                //             ->numeric()
-                //             ->prefix('$'),
-
-                //         Forms\Components\FileUpload::make('receipt')
-                //             ->label('Comprobante')
-                //             ->directory('payment-receipts')
-                //             ->acceptedFileTypes(['application/pdf']),
-
-                //         Forms\Components\Textarea::make('notes')
-                //             ->label('Observaciones'),
-                //     ])
-                //     ->action(function (ActiveLoan $record, array $data) {
-                //         $record->applyPayment(
-                //             amount: $data['amount'],
-                //             paymentDate: $data['payment_date'],
-                //             receiptNumber: $data['receipt'] ?? null,
-                //             notes: $data['notes'] ?? null
-                //         );
-                //     }),
+                Action::make('disburse')
+                    ->label('Desembolsar Préstamo')
+                    ->icon('heroicon-o-banknotes')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Desea desembolsar este préstamo?')
+                    ->modalDescription('Esta acción iniciará el cronograma de pagos del préstamo.')
+                    ->modalSubmitActionLabel('Sí, desembolsar')
+                    ->visible(
+                        fn(ActiveLoan $record): bool =>
+                        $record->status === ActiveLoan::STATUS_PENDING_DISBURSEMENT
+                    )
+                    ->action(function (ActiveLoan $record) {
+                        try {
+                            $record->disburse();
+                            Notification::make()
+                                ->success()
+                                ->title('Préstamo Desembolsado')
+                                ->body('El préstamo ha sido desembolsado exitosamente.')
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Error')
+                                ->body($e->getMessage())
+                                ->send();
+                        }
+                    })
             ])
             ->defaultSort('created_at', 'desc');
     }
