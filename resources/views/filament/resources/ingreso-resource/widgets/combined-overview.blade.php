@@ -1,5 +1,6 @@
 <x-filament-widgets::widget>
     <x-filament::section>
+        <!-- Filtro de fechas -->
         <x-filament::card class="bg-white p-4 sm:p-6 border border-gray-200 rounded-lg shadow-md max-w-4xl mx-auto">
             <form wire:submit.prevent="filterResults" class="flex flex-col sm:flex-row items-start sm:items-end justify-end gap-4 sm:gap-6">
                 <div class="flex flex-col sm:flex-row items-center justify-end gap-4 sm:gap-6">
@@ -36,6 +37,7 @@
             </form>
         </x-filament::card>
 
+        <!-- Primera fila de cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
             {{-- Ingresos --}}
             <div class="rounded-xl bg-indigo-50 shadow">
@@ -96,6 +98,72 @@
                     </div>
                     <div class="mt-2">
                         <div class="h-1 w-full bg-danger-500 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda fila de cards (Préstamos) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
+            {{-- Préstamos Activos --}}
+            <div class="rounded-xl bg-purple-50 shadow">
+                <div class="p-4">
+                    <h3 class="text-sm font-medium text-gray-500">Préstamos Activos</h3>
+                    <div class="mt-1">
+                        <div class="text-2xl font-bold text-gray-900">
+                            $ {{ $data['activeLoansTotal'] }}
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center text-purple-600">
+                        <span class="text-xs font-medium">
+                            {{ $data['activeLoansCount'] }} préstamos vigentes
+                        </span>
+                        <x-heroicon-m-banknotes class="ml-1 h-3 w-3"/>
+                    </div>
+                    <div class="mt-2">
+                        <div class="h-1 w-full bg-purple-500 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Saldo en Mora --}}
+            <div class="rounded-xl bg-red-50 shadow">
+                <div class="p-4">
+                    <h3 class="text-sm font-medium text-gray-500">Saldo en Mora</h3>
+                    <div class="mt-1">
+                        <div class="text-2xl font-bold text-red-600">
+                            $ {{ $data['latePaymentsBalance'] }}
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center text-red-600">
+                        <span class="text-xs font-medium">
+                            Pagos atrasados
+                        </span>
+                        <x-heroicon-m-clock class="ml-1 h-3 w-3"/>
+                    </div>
+                    <div class="mt-2">
+                        <div class="h-1 w-full bg-red-500 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Ingresos por Préstamos --}}
+            <div class="rounded-xl bg-green-50 shadow">
+                <div class="p-4">
+                    <h3 class="text-sm font-medium text-gray-500">Ingresos por Préstamos</h3>
+                    <div class="mt-1">
+                        <div class="text-2xl font-bold text-gray-900">
+                            $ {{ $data['loanPaymentsIncome'] }}
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center text-green-600">
+                        <span class="text-xs font-medium">
+                            Pagos recibidos
+                        </span>
+                        <x-heroicon-m-arrow-trending-up class="ml-1 h-3 w-3"/>
+                    </div>
+                    <div class="mt-2">
+                        <div class="h-1 w-full bg-green-500 rounded"></div>
                     </div>
                 </div>
             </div>
