@@ -18,14 +18,20 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Support\Colors\Color;
 use Filament\Infolists\Components\TextEntry;
+use Illuminate\Support\Facades\DB;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Filament\Tables\Columns\TextColumn;
+
 
 class ActiveLoanLitoralResource extends Resource
 {
     protected static ?string $model = ActiveLoanLitoral::class;
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $modelLabel = 'Préstamo Litoral';
-    protected static ?string $pluralModelLabel = 'Préstamos Litorales';
-    protected static ?int $navigationSort = 2;
+    protected static ?string $modelLabel = 'Préstamo Activo';
+    protected static ?string $pluralModelLabel = 'Préstamos Activos';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -294,9 +300,22 @@ class ActiveLoanLitoralResource extends Resource
                     ->money('COP')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('next_payment_date')
-                    ->label('Próximo Pago')
-                    ->date('d/m/Y')
+                Tables\Columns\TextColumn::make('payment_quota')
+                    ->label('Cuota a Pagar')
+                    ->getStateUsing(function ($record) {
+                        try {
+                            $nextPayment = $record->getNextPayment();
+                            if (!$nextPayment) {
+                                return 0;
+                            }
+
+                            return $nextPayment->getPaymentQuota();
+                        } catch (\Exception $e) {
+                            \Log::error('Error al calcular cuota: ' . $e->getMessage());
+                            return 0;
+                        }
+                    })
+                    ->money('COP')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('status')
@@ -314,6 +333,17 @@ class ActiveLoanLitoralResource extends Resource
                         'completed' => 'Completado',
                         default => 'Desconocido',
                     }),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()->after(function () {
+                        // Reinicia el autoincremento después de eliminar los registros
+                        DB::statement('ALTER TABLE ordenes AUTO_INCREMENT = 1');
+                    }),
+                    ExportBulkAction::make()->exports([
+                        ExcelExport::make('table')->fromTable()->withFilename('Hoja de pago -' . date('Y-m-d')),
+                    ])
+                ]),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

@@ -13,6 +13,11 @@ class ActiveLoanLitoral extends Model
     use SoftDeletes;
 
     protected $table = 'active_loans_litorals';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
 
     protected $fillable = [
         'loan_request_id',
@@ -68,6 +73,12 @@ class ActiveLoanLitoral extends Model
         self::PAYMENT_FREQUENCY_MONTHLY => 'Mensual',
         self::PAYMENT_FREQUENCY_BIWEEKLY => 'Quincenal'
     ];
+
+    // Método para obtener la cuota total
+    public function getPaymentQuota(): float
+    {
+        return floatval($this->principal_amount) + floatval($this->interest_amount);
+    }
 
     // Relaciones
     public function loanRequest(): BelongsTo
@@ -449,6 +460,12 @@ class LoanPaymentLitoral extends Model
         self::STATUS_LATE => 'Atrasado'
     ];
 
+    // Método para obtener la cuota total
+    public function getPaymentQuota(): float
+    {
+        return floatval($this->principal_amount) + floatval($this->interest_amount);
+    }
+
     public function activeLoanLitoral(): BelongsTo
     {
         return $this->belongsTo(ActiveLoanLitoral::class, 'active_loan_litoral_id');
@@ -505,7 +522,7 @@ class LoanPaymentLitoral extends Model
         return !empty($this->receipt_number) || !empty($this->receipt_file);
     }
 
-    // Boot method para eventos del modelo
+    // Boot method para eventos del modelo 
     protected static function boot()
     {
         parent::boot();

@@ -37,7 +37,7 @@ class LoanRequest extends Model
     // Constantes
     const PAYMENT_FREQUENCIES = [
         'monthly' => 'Mensual',
-        'biweekly' => 'Quincenal'
+        // 'biweekly' => 'Quincenal'
     ];
 
     const LOAN_REASONS = [

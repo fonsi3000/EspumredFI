@@ -22,7 +22,7 @@ class IngresoLitoralResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-circle';
     protected static ?string $modelLabel = 'Ingreso ';
     protected static ?string $pluralModelLabel = 'Ingresos ';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

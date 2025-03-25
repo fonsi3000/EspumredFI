@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Litoral\Resources\ActiveloanLitoralResource\Widgets\LitoralOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,12 +18,15 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Shanerbaner82\PanelRoles\PanelRoles;
+
 
 class LitoralPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->profile()
             ->id('litoral')
             ->path('litoral')
             ->login()
@@ -38,6 +42,7 @@ class LitoralPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
+                LitoralOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -55,6 +60,9 @@ class LitoralPanelProvider extends PanelProvider
             ])
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                PanelRoles::make()
+                    ->roleToAssign('super_admin')
+                    ->restrictedRoles(['super_admin', 'litoral', 'gerencia']),
             ]);
     }
 }

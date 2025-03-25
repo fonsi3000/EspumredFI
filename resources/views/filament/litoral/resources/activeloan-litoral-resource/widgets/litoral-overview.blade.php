@@ -137,7 +137,7 @@
                     </div>
                     <div class="mt-2 flex items-center text-red-600">
                         <span class="text-xs font-medium">
-                            Saldo de interes
+                            Saldo de intereses 
                         </span>
                         <x-heroicon-m-clock class="ml-1 h-3 w-3"/>
                     </div>
@@ -146,7 +146,7 @@
                     </div>
                 </div>
             </div>
-            
+
             {{-- Ingresos por Préstamos --}}
             <div class="rounded-xl bg-green-50 shadow">
                 <div class="p-4">

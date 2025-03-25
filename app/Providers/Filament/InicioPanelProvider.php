@@ -20,12 +20,16 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Resources\GastoResource\Widgets\GastosOverview;
 use App\Filament\Resources\IngresoResource\Widgets\CombinedOverview;
+use Shanerbaner82\PanelRoles\PanelRoles;
+use App\Filament\Pages\Auth\EditProfile;
+use Filament\Pages\Auth\EditProfile as AuthEditProfile;
 
 class InicioPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->profile()
             ->default()
             ->id('inicio')
             ->path('inicio')
@@ -33,6 +37,7 @@ class InicioPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -63,6 +68,9 @@ class InicioPanelProvider extends PanelProvider
             ])
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                PanelRoles::make()
+                    ->roleToAssign('super_admin')
+                    ->restrictedRoles(['super_admin', 'medellin', 'gerencia']),
             ]);
     }
 }

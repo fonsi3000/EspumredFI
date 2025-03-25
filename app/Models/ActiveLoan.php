@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActiveLoan extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     use SoftDeletes;
 
     protected $fillable = [
@@ -66,6 +71,12 @@ class ActiveLoan extends Model
         self::PAYMENT_FREQUENCY_MONTHLY => 'Mensual',
         self::PAYMENT_FREQUENCY_BIWEEKLY => 'Quincenal'
     ];
+
+    // Método para obtener la cuota total
+    public function getPaymentQuota(): float
+    {
+        return floatval($this->principal_amount) + floatval($this->interest_amount);
+    }
 
     // Relaciones
     public function loanRequest(): BelongsTo
@@ -443,6 +454,11 @@ class LoanPayment extends Model
         self::STATUS_PARTIAL => 'Pago Parcial',
         self::STATUS_LATE => 'Atrasado'
     ];
+
+    public function getPaymentQuota(): float
+    {
+        return floatval($this->principal_amount) + floatval($this->interest_amount);
+    }
 
     public function activeLoan(): BelongsTo
     {

@@ -19,7 +19,7 @@ class CuentaIngresoLitoralResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
     protected static ?string $modelLabel = 'Cuenta de Ingreso';
     protected static ?string $pluralModelLabel = 'Cuentas de Ingresos';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

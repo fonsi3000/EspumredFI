@@ -20,7 +20,7 @@ class GastoLitoralResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-circle';
     protected static ?string $modelLabel = 'Gasto ';
     protected static ?string $pluralModelLabel = 'Gastos ';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
