@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -45,7 +43,9 @@ services:
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
-    entrypoint: ""
+    # 👇 Elimina esta línea porque sin `command:` no puede ejecutarse en `up`
+    # entrypoint: "" 👈❌ ¡Esta línea es la que causaba el error!
+    # No necesita estar corriendo todo el tiempo, se ejecuta solo cuando se lanza el comando manualmente.
 
   db:
     image: mysql:8.0
