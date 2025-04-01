@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use BezhanSalleh\PanelSwitch\PanelSwitch;
 
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +12,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $configPath = __DIR__ . '/../config/loans.php';
+
+        if (file_exists($configPath)) {
+            $this->mergeConfigFrom(
+                $configPath,
+                'loans'
+            );
+        }
     }
 
     /**
@@ -21,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Configuración de PanelSwitch
         PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
             $panelSwitch
                 ->simple()
@@ -33,5 +40,10 @@ class AppServiceProvider extends ServiceProvider
                     'super_admin',
                 ]));
         });
+
+        // Publicar configuración de préstamos
+        $this->publishes([
+            __DIR__ . '/../config/loans.php' => config_path('loans.php'),
+        ], 'loans-config');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PublicLoanRequestController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -7,6 +8,18 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return redirect()->route('filament.inicio.auth.login'); // Redirige al login de inicio
 });
+
+// Rutas públicas para solicitudes de préstamo 
+
+Route::get('/solicitar-prestamo', [PublicLoanRequestController::class, 'showForm'])
+    ->name('public.loan-request.form');
+
+Route::post('/solicitar-prestamo', [PublicLoanRequestController::class, 'store'])
+    ->name('public.loan-request.store');
+
+Route::get('/solicitud-prestamo-exitosa', [PublicLoanRequestController::class, 'success'])
+    ->name('public.loan-request.success');
+
 
 // Ruta común para redirección después del login
 Route::get('/redirect-after-login', function () {
