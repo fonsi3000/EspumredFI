@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build:
@@ -15,7 +17,7 @@ services:
       APP_DEBUG: ${APP_DEBUG}
       APP_URL: ${APP_URL}
     volumes:
-      - .:/srv/app
+      - .:/var/www/html
     depends_on:
       - db
     networks:
@@ -30,22 +32,11 @@ services:
       - "${NGINX_PORT}:80"
       - "${NGINX_SSL_PORT}:443"
     volumes:
-      - .:/srv/app
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
+      - .:/var/www/html
     depends_on:
       - app
     networks:
       - ${DOCKER_NETWORK}
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
-    # 👇 Elimina esta línea porque sin `command:` no puede ejecutarse en `up`
-    # entrypoint: "" 👈❌ ¡Esta línea es la que causaba el error!
-    # No necesita estar corriendo todo el tiempo, se ejecuta solo cuando se lanza el comando manualmente.
 
   db:
     image: mysql:8.0
