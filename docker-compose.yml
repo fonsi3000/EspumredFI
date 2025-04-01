@@ -33,10 +33,19 @@ services:
       - "${NGINX_SSL_PORT}:443"
     volumes:
       - .:/var/www/html
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
     depends_on:
       - app
     networks:
       - ${DOCKER_NETWORK}
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: ""
 
   db:
     image: mysql:8.0
