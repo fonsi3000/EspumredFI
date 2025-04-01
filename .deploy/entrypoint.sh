@@ -3,7 +3,7 @@
 echo "Esperando que MySQL esté disponible..."
 
 # Esperar hasta que el puerto 3306 esté disponible en registros_db
-until nc -z registros_db 3306; do
+until nc -z fondo_empleado_db 3306; do
   echo "MySQL aún no responde, reintentando..."
   sleep 2
 done
