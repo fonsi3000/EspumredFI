@@ -17,7 +17,12 @@ RUN apk add --no-cache \
     nginx \
     openssl \
     netcat-openbsd \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl intl
+    # Dependencias para GD
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl intl gd
 
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
