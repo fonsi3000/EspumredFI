@@ -50,13 +50,13 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST}
     volumes:
-      - registros_db_data:/var/lib/mysql
+      - fondo_empleado_db_data:/var/lib/mysql
     networks:
       - ${DOCKER_NETWORK}
 
 networks:
-  registros_network:
+  fondo_empleado_network:
     driver: bridge
 
 volumes:
-  registros_db_data:
+  fondo_empleado_db_data:
