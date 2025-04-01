@@ -111,7 +111,7 @@ class LoanRequestLitoralResource extends Resource
                         Forms\Components\Grid::make(1)
                             ->schema([
                                 Forms\Components\FileUpload::make('guarantee_document')
-                                    ->label('Documento de Garantía')
+                                    ->label('Documento')
                                     ->helperText('Subir documento en formato PDF. Máximo 5MB.')
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->directory('loan-documents-litoral')

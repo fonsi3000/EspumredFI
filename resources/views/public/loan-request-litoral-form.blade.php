@@ -204,7 +204,7 @@
                 <h3>Solicitud de Préstamo</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('public.loan-request.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('public.loan-request-litoral.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     @if ($errors->any())

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PublicLoanRequestController;
+use App\Http\Controllers\PublicLoanRequestLitoralController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +20,15 @@ Route::post('/solicitar-prestamo', [PublicLoanRequestController::class, 'store']
 
 Route::get('/solicitud-prestamo-exitosa', [PublicLoanRequestController::class, 'success'])
     ->name('public.loan-request.success');
+
+Route::get('/solicitar-prestamo-litoral', [PublicLoanRequestLitoralController::class, 'showForm'])
+    ->name('public.loan-request-litoral.form');
+
+Route::post('/solicitar-prestamo-litoral', [PublicLoanRequestLitoralController::class, 'store'])
+    ->name('public.loan-request-litoral.store');
+
+Route::get('/solicitud-prestamo-litoral-exitosa', [PublicLoanRequestLitoralController::class, 'success'])
+    ->name('public.loan-request-litoral.success');
 
 
 // Ruta común para redirección después del login
