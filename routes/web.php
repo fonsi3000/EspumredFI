@@ -1,38 +1,97 @@
 <?php
 
-use App\Http\Controllers\LoanRequestController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+namespace App\Http\Controllers;
 
-// Ruta principal: Muestra el login de inicio
-Route::get('/', function () {
-    return redirect()->route('filament.inicio.auth.login'); // Redirige al login de inicio
-});
+use App\Models\LoanRequest;
+use App\Models\LoanRequestLitoral;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
-// Rutas públicas para solicitudes de préstamo (unificadas)
-Route::get('/solicitar-prestamo', [LoanRequestController::class, 'showForm'])
-    ->name('public.loan-request.form');
+class LoanRequestController extends Controller
+{
+    public function showForm()
+    {
+        // Usamos las constantes de cualquiera de los dos modelos ya que ambos tienen los mismos valores
+        return view('public.loan-request-form', [
+            'loanReasons' => LoanRequest::LOAN_REASONS,
+        ]);
+    }
 
-Route::post('/solicitar-prestamo', [LoanRequestController::class, 'store'])
-    ->name('public.loan-request.store');
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'document_number' => 'required|string|max:20',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'area' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'company' => 'required|in:espumas_medellin,espumados_litoral,ctn_carga',
+            'loan_reason' => 'required|in:' . implode(',', array_keys(LoanRequest::LOAN_REASONS)),
+            'description' => 'nullable|string',
+            'guarantee_document' => 'nullable|file|mimes:pdf|max:5120',
+        ]);
 
-Route::get('/solicitud-prestamo-exitosa', [LoanRequestController::class, 'success'])
-    ->name('public.loan-request-success');
-
-// Ruta común para redirección después del login
-Route::get('/redirect-after-login', function () {
-    // Verifica si el usuario está autenticado
-    if (Auth::check()) {
-        $empresa = Auth::user()->empresa;
-
-        // Redirige según el valor de 'empresa'
-        if ($empresa === 'Espumas Medellin') {
-            return redirect()->route('filament.inicio.pages.dashboard'); // Redirige al panel de inicio
-        } elseif ($empresa === 'Espumados del Litoral') {
-            return redirect()->route('filament.litoral.pages.dashboard'); // Redirige al panel de litoral
+        // Determinar el modelo a usar basado en la empresa seleccionada
+        if ($validated['company'] === 'espumados_litoral') {
+            // Si es Espumados del Litoral, usamos ese modelo
+            return $this->storeLitoralRequest($validated, $request);
+        } else {
+            // Para Espumas Medellin y CTN Carga, usamos el modelo principal
+            return $this->storeMedellinRequest($validated, $request);
         }
     }
 
-    // Si no está autenticado o no tiene una empresa definida, redirige al login de inicio
-    return redirect()->route('filament.inicio.auth.login');
-})->name('redirect.after.login');
+    private function storeMedellinRequest($validated, Request $request)
+    {
+        // Manejar el Documento
+        if ($request->hasFile('guarantee_document')) {
+            $path = $request->file('guarantee_document')->store('loan-documents', 'public');
+            $validated['guarantee_document'] = $path;
+        }
+
+        // Asignar valores predeterminados
+        $validated['loan_number'] = LoanRequest::generateLoanNumber();
+        $validated['status'] = 'pending_approval';
+        $validated['interest_rate'] = 1; // Valor fijo de 1%
+
+        // Asignar un usuario responsable
+        $validated['responsible_user_id'] = config('loans.default_admin_user_id', 1);
+        $validated['created_by_user_id'] = config('loans.default_admin_user_id', 1);
+
+        // Crear la solicitud
+        LoanRequest::create($validated);
+
+        // Usar URL absoluta en lugar de ruta nombrada
+        return redirect('https://beneficioempleados.espumasmedellin.com.co/solicitud-prestamo-exitosa');
+    }
+
+    private function storeLitoralRequest($validated, Request $request)
+    {
+        // Manejar el Documento
+        if ($request->hasFile('guarantee_document')) {
+            $path = $request->file('guarantee_document')->store('loan-documents-litoral', 'public');
+            $validated['guarantee_document'] = $path;
+        }
+
+        // Asignar valores predeterminados
+        $validated['loan_number'] = LoanRequestLitoral::generateLoanNumber();
+        $validated['status'] = 'pending_approval';
+        $validated['interest_rate'] = 1;
+
+        // Asignar un usuario responsable
+        $validated['responsible_user_id'] = config('loans.default_admin_user_id', 1);
+        $validated['created_by_user_id'] = config('loans.default_admin_user_id', 1);
+
+        // Crear la solicitud
+        LoanRequestLitoral::create($validated);
+
+        // Usar URL absoluta en lugar de ruta nombrada
+        return redirect('https://beneficioempleados.espumasmedellin.com.co/solicitud-prestamo-exitosa');
+    }
+
+    public function success()
+    {
+        return view('public.loan-request-success');
+    }
+}
