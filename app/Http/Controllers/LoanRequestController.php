@@ -62,7 +62,7 @@ class LoanRequestController extends Controller
         // Crear la solicitud
         LoanRequest::create($validated);
 
-        return redirect()->route('public.loan-request.success');
+        return redirect()->route('public.loan-request-success');
     }
 
     private function storeLitoralRequest($validated, Request $request)
