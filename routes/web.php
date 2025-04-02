@@ -17,7 +17,7 @@ Route::post('/solicitar-prestamo', [LoanRequestController::class, 'store'])
     ->name('public.loan-request.store');
 
 Route::get('/solicitud-prestamo-exitosa', [LoanRequestController::class, 'success'])
-    ->name('public.loan-request.success');
+    ->name('public.loan-request-success');
 
 // Ruta común para redirección después del login
 Route::get('/redirect-after-login', function () {
