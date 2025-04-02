@@ -221,7 +221,7 @@
                                     <option value="" selected disabled>Seleccione la empresa</option>
                                     <option value="espumas_medellin" {{ old('company') == 'espumas_medellin' ? 'selected' : '' }}>Espumas medellin</option>
                                     <option value="espumados_litoral" {{ old('company') == 'espumados_litoral' ? 'selected' : '' }}>Espumados del litoral</option>
-                                    <option value="ctn_carga" {{ old('company') == 'ctn_carga' ? 'selected' : '' }}>CTN Carga y logistica</option>
+                                    <option value="ctn_carga" {{ old('company') == 'ctn_carga' ? 'selected' : '' }}>STN Carga y logistica</option>
                                 </select>
                             </div>
                         </div>
