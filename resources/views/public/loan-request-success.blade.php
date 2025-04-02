@@ -131,10 +131,10 @@
                 <p class="confirmation-text">Hemos registrado su solicitud correctamente.</p>
                 <p class="confirmation-details">Un representante revisará su solicitud en breve y le informaremos el estado a través del correo electrónico proporcionado.</p>
                 
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     <a href="{{ route('public.loan-request.form') }}" class="btn btn-outline-primary me-2">Realizar otra solicitud</a>
                     <a href="/" class="btn btn-primary">Volver al inicio</a>
-                </div>
+                </div> --}}
             </div>
         </div>
         

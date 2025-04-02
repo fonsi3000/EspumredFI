@@ -1,35 +1,23 @@
 <?php
 
-use App\Http\Controllers\PublicLoanRequestController;
-use App\Http\Controllers\PublicLoanRequestLitoralController;
+use App\Http\Controllers\LoanRequestController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Ruta principal: Muestra el login de inicio (puedes cambiarlo si es necesario)
+// Ruta principal: Muestra el login de inicio
 Route::get('/', function () {
     return redirect()->route('filament.inicio.auth.login'); // Redirige al login de inicio
 });
 
-// Rutas públicas para solicitudes de préstamo 
-
-Route::get('/solicitar-prestamo', [PublicLoanRequestController::class, 'showForm'])
+// Rutas públicas para solicitudes de préstamo (unificadas)
+Route::get('/solicitar-prestamo', [LoanRequestController::class, 'showForm'])
     ->name('public.loan-request.form');
 
-Route::post('/solicitar-prestamo', [PublicLoanRequestController::class, 'store'])
+Route::post('/solicitar-prestamo', [LoanRequestController::class, 'store'])
     ->name('public.loan-request.store');
 
-Route::get('/solicitud-prestamo-exitosa', [PublicLoanRequestController::class, 'success'])
+Route::get('/solicitud-prestamo-exitosa', [LoanRequestController::class, 'success'])
     ->name('public.loan-request.success');
-
-Route::get('/solicitar-prestamo-litoral', [PublicLoanRequestLitoralController::class, 'showForm'])
-    ->name('public.loan-request-litoral.form');
-
-Route::post('/solicitar-prestamo-litoral', [PublicLoanRequestLitoralController::class, 'store'])
-    ->name('public.loan-request-litoral.store');
-
-Route::get('/solicitud-prestamo-litoral-exitosa', [PublicLoanRequestLitoralController::class, 'success'])
-    ->name('public.loan-request-litoral.success');
-
 
 // Ruta común para redirección después del login
 Route::get('/redirect-after-login', function () {

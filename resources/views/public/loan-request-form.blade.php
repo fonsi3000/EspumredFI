@@ -218,10 +218,10 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <select class="form-select" name="company" required>
-                                    <option value="" selected disabled>Selecciona tu empresa.</option>
-                                    <option value="espumas_medellin" {{ old('company') == 'espumas_medellin' ? 'selected' : '' }}>Espumas medellin S.A</option>
-                                    <option value="espumados_litoral" {{ old('company') == 'espumados_litoral' ? 'selected' : '' }}>Espumados del litoral S.A</option>
-                                    <option value="ctn_carga" {{ old('company') == 'ctn_carga' ? 'selected' : '' }}>STN Carga y logistica</option>
+                                    <option value="" selected disabled>Seleccione la empresa</option>
+                                    <option value="espumas_medellin" {{ old('company') == 'espumas_medellin' ? 'selected' : '' }}>Espumas medellin</option>
+                                    <option value="espumados_litoral" {{ old('company') == 'espumados_litoral' ? 'selected' : '' }}>Espumados del litoral</option>
+                                    <option value="ctn_carga" {{ old('company') == 'ctn_carga' ? 'selected' : '' }}>CTN Carga y logistica</option>
                                 </select>
                             </div>
                         </div>
