@@ -17,13 +17,18 @@ return new class extends Migration {
             $table->string('email');
             $table->string('area');
             $table->string('position');
+            $table->enum('company', [
+                'espumas_medellin',
+                'espumados_litoral',
+                'ctn_carga'
+            ]);
 
             // Detalles del Préstamo
             $table->string('loan_number')->unique();
-            $table->decimal('amount', 12, 0);
-            $table->integer('term_months');
+            $table->decimal('amount', 12, 0)->nullable();
+            $table->integer('term_months')->nullable();
             $table->decimal('interest_rate', 5, 2);
-            $table->enum('payment_frequency', ['monthly', 'biweekly']);
+            $table->enum('payment_frequency', ['monthly', 'biweekly'])->nullable();
             $table->enum('loan_reason', [
                 'education',
                 'health',
@@ -32,6 +37,7 @@ return new class extends Migration {
                 'personal',
                 'others'
             ]);
+            $table->text('description')->nullable();
 
             // Documentación
             $table->string('guarantee_document')->nullable();

@@ -68,6 +68,15 @@ class LoanRequestResource extends Resource
                                     ->label('Cargo')
                                     ->required()
                                     ->maxLength(255),
+
+                                Forms\Components\Select::make('company')
+                                    ->label('Empresa')
+                                    ->options([
+                                        'espumas_medellin' => 'Espumas medellin',
+                                        'espumados_litoral' => 'Espumados del litoral',
+                                        'ctn_carga' => 'STN Carga y logistica',
+                                    ])
+                                    ->required(),
                             ]),
                     ]),
 
@@ -102,6 +111,11 @@ class LoanRequestResource extends Resource
                                     ->label('Motivo del Préstamo')
                                     ->options(LoanRequest::LOAN_REASONS)
                                     ->required(),
+
+                                Forms\Components\Textarea::make('description')
+                                    ->label('Descripción')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
                             ]),
                     ]),
 
@@ -166,6 +180,13 @@ class LoanRequestResource extends Resource
                                         ->label('Área'),
                                     Infolists\Components\TextEntry::make('position')
                                         ->label('Cargo'),
+                                    Infolists\Components\TextEntry::make('company')
+                                        ->label('Empresa')
+                                        ->formatStateUsing(fn(string $state): string => [
+                                            'espumas_medellin' => 'Espumas medellin',
+                                            'espumados_litoral' => 'Espumados del litoral',
+                                            'ctn_carga' => 'STN Carga y logistica',
+                                        ][$state] ?? $state),
                                 ]),
 
                                 Infolists\Components\Group::make([
@@ -201,6 +222,10 @@ class LoanRequestResource extends Resource
                                 ]),
                             ]),
 
+                        Infolists\Components\TextEntry::make('description')
+                            ->label('Descripción')
+                            ->columnSpanFull(),
+
                         Infolists\Components\TextEntry::make('observations')
                             ->label('Observaciones')
                             ->visible(fn($record) => $record->status === 'rejected')
@@ -223,18 +248,25 @@ class LoanRequestResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('Monto')
-                    ->money('COP')
+                Tables\Columns\TextColumn::make('position')
+                    ->label('Cargo')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('term_months')
-                    ->label('Plazo')
-                    ->suffix(' meses'),
+                // Tables\Columns\TextColumn::make('term_months')
+                //     ->label('Plazo')
+                //     ->suffix(' meses'),
 
-                Tables\Columns\TextColumn::make('payment_frequency')
-                    ->label('Frecuencia de Pago')
-                    ->formatStateUsing(fn(string $state): string => LoanRequest::PAYMENT_FREQUENCIES[$state] ?? $state),
+                // Tables\Columns\TextColumn::make('payment_frequency')
+                //     ->label('Frecuencia de Pago')
+                //     ->formatStateUsing(fn(string $state): string => LoanRequest::PAYMENT_FREQUENCIES[$state] ?? $state),
+
+                // Tables\Columns\TextColumn::make('company')
+                //     ->label('Empresa')
+                //     ->formatStateUsing(fn(string $state): string => [
+                //         'espumas_medellin' => 'Espumas medellin',
+                //         'espumados_litoral' => 'Espumados del litoral',
+                //         'ctn_carga' => 'STN Carga y logistica',
+                //     ][$state] ?? $state),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
@@ -331,7 +363,7 @@ class LoanRequestResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    //
+                    //  
                 ]),
             ]);
     }

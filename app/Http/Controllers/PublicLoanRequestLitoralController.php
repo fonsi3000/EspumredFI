@@ -24,9 +24,9 @@ class PublicLoanRequestLitoralController extends Controller
             'email' => 'required|email|max:255',
             'area' => 'required|string|max:255',
             'position' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:1',
-            'term_months' => 'required|integer|min:1',
+            'company' => 'required|in:espumas_medellin,espumados_litoral,ctn_carga',
             'loan_reason' => 'required|in:' . implode(',', array_keys(LoanRequestLitoral::LOAN_REASONS)),
+            'description' => 'nullable|string',
             'guarantee_document' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
@@ -38,7 +38,7 @@ class PublicLoanRequestLitoralController extends Controller
         $validated['loan_number'] = LoanRequestLitoral::generateLoanNumber();
         $validated['status'] = 'pending_approval';
         $validated['interest_rate'] = 1;
-        $validated['payment_frequency'] = 'monthly';
+
         $validated['responsible_user_id'] = config('loans.default_admin_user_id', 1);
         $validated['created_by_user_id'] = config('loans.default_admin_user_id', 1);
 

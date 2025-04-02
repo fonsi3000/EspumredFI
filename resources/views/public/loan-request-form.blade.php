@@ -73,33 +73,10 @@
             color: #6c757d;
         }
 
-        .amount-input-group {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ced4da;
-            border-radius: 50px;
-            overflow: hidden;
-            background-color: white;
-            height: 46px;
-        }
-
-        .amount-input-group .currency-symbol {
-            padding: 0 0 0 1rem;
-            color: #212529;
-            font-size: 1rem;
-        }
-
-        .amount-input-group input {
-            flex-grow: 1;
-            border: none;
-            padding-left: 0.3rem;
-            height: 44px;
-            background-color: transparent;
-        }
-
-        .amount-input-group input:focus {
-            box-shadow: none;
-            outline: none;
+        textarea.form-control {
+            border-radius: 20px;
+            height: auto;
+            padding: 0.75rem 1rem;
         }
 
         .form-row {
@@ -239,6 +216,14 @@
                             <div class="col-12 col-sm-6 col-md-4 mb-2">
                                 <input type="text" class="form-control" name="position" placeholder="Cargo" value="{{ old('position') }}" required>
                             </div>
+                            <div class="col-12 mb-2">
+                                <select class="form-select" name="company" required>
+                                    <option value="" selected disabled>Seleccione la empresa</option>
+                                    <option value="espumas_medellin" {{ old('company') == 'espumas_medellin' ? 'selected' : '' }}>Espumas medellin S.A</option>
+                                    <option value="espumados_litoral" {{ old('company') == 'espumados_litoral' ? 'selected' : '' }}>Espumados del litoral S.A</option>
+                                    <option value="ctn_carga" {{ old('company') == 'ctn_carga' ? 'selected' : '' }}>STN Carga y logistica</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -248,17 +233,6 @@
                     <div class="form-section">
                         <h5 class="section-title">Detalles del préstamo</h5>
                         <div class="row form-row">
-                            <div class="col-12 col-md-6">
-                                <div class="amount-input-group">
-                                    <span class="currency-symbol">$</span>
-                                    <input type="number" class="form-control" name="amount" placeholder="Monto solicitado" value="{{ old('amount') }}" required>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 mt-2 mt-md-0">
-                                <input type="number" class="form-control" name="term_months" placeholder="Plazo (meses)" value="{{ old('term_months') }}" required>
-                            </div>
-                        </div>
-                        <div class="row form-row mt-2">
                             <div class="col-12">
                                 <select class="form-select" name="loan_reason" required>
                                     <option value="" selected disabled>Motivo del préstamo</option>
@@ -266,6 +240,11 @@
                                         <option value="{{ $value }}" {{ old('loan_reason') == $value ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row form-row mt-3">
+                            <div class="col-12">
+                                <textarea class="form-control" name="description" placeholder="Descripción del préstamo" rows="3">{{ old('description') }}</textarea>
                             </div>
                         </div>
                     </div>

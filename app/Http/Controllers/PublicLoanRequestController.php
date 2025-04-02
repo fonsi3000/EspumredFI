@@ -26,9 +26,9 @@ class PublicLoanRequestController extends Controller
             'email' => 'required|email|max:255',
             'area' => 'required|string|max:255',
             'position' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:1',
-            'term_months' => 'required|integer|min:1',
+            'company' => 'required|in:espumas_medellin,espumados_litoral,ctn_carga',
             'loan_reason' => 'required|in:' . implode(',', array_keys(LoanRequest::LOAN_REASONS)),
+            'description' => 'nullable|string',
             'guarantee_document' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
@@ -42,7 +42,6 @@ class PublicLoanRequestController extends Controller
         $validated['loan_number'] = LoanRequest::generateLoanNumber();
         $validated['status'] = 'pending_approval';
         $validated['interest_rate'] = 1; // Valor fijo de 1%
-        $validated['payment_frequency'] = 'monthly'; // Valor fijo de mensual
 
         // Asignar un usuario responsable (por ejemplo, un administrador predeterminado)
         $validated['responsible_user_id'] = config('loans.default_admin_user_id', 1);
