@@ -62,8 +62,7 @@ class LoanRequestController extends Controller
         // Crear la solicitud
         LoanRequest::create($validated);
 
-        // Usar URL absoluta en lugar de ruta nombrada
-        return redirect('https://beneficioempleados.espumasmedellin.com.co/solicitud-prestamo-exitosa');
+        return redirect()->route('public.loan-request-success');
     }
 
     private function storeLitoralRequest($validated, Request $request)
@@ -86,8 +85,7 @@ class LoanRequestController extends Controller
         // Crear la solicitud
         LoanRequestLitoral::create($validated);
 
-        // Usar URL absoluta en lugar de ruta nombrada
-        return redirect('https://beneficioempleados.espumasmedellin.com.co/solicitud-prestamo-exitosa');
+        return redirect()->route('public.loan-request-success');
     }
 
     public function success()
